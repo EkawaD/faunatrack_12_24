@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<ul>
+    {% for projet in object_list %}
+        <li> {{ projet }} </li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}
+
+{% block before_footer %}{% endblock before_footer %}

@@ -16,7 +16,6 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
 import faunatrack.views as faunatrack_views
 from django.urls import include, path
 
