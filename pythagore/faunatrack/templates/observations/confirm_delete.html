@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p> Supprimer l'observation : {{ object }} ? </p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmer </button>
+        <a href="{% url 'observation_list' %}">Annuler </a>
+    </form>
+{% endblock content %}

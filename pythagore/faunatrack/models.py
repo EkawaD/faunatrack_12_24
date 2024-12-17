@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+
+from faunatrack.validators import validate_latitude, validate_longitude
 # from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -32,8 +34,8 @@ class Projet(models.Model):
         return self.titre
 
 class GPS(models.Model):
-    latitude = models.DecimalField(decimal_places=5, max_digits=8)
-    longitude = models.DecimalField(decimal_places=5, max_digits=8)
+    latitude = models.DecimalField(decimal_places=5, max_digits=8, validators=[validate_latitude])
+    longitude = models.DecimalField(decimal_places=5, max_digits=8, validators=[validate_longitude])
 
     class Meta:
         verbose_name="GPS"
@@ -43,7 +45,7 @@ class GPS(models.Model):
         return f"Un endroit super cool avec les coordonnées suivantes: {self.latitude}, {self.longitude}"
 
 class Observation(models.Model):
-    scientifique = models.ForeignKey("faunatrack.ProfilScientifique", on_delete=models.SET_NULL, related_name="observations", null=True, default=None)
+    scientifique = models.ForeignKey("faunatrack.ProfilScientifique", on_delete=models.SET_NULL, related_name="observations", null=True, blank=True, default=None)
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name="observations", null=True, default=None)
     espece = models.ForeignKey(Espece, on_delete=models.PROTECT, related_name="observations")
     quantite = models.IntegerField(default=0)

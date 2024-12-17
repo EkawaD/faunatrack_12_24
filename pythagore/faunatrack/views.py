@@ -1,8 +1,9 @@
 
+from django.forms import ValidationError
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView
 from faunatrack.models import Observation, Projet
 from faunatrack.forms import ObservationForm
 
@@ -14,19 +15,30 @@ class ObservationList(ListView):
 
 class ObservationCreate(CreateView):
     model = Observation
-    template_name = "observations/create.html"
+    template_name = "observations/form.html"
     form_class = ObservationForm
     success_url = reverse_lazy('observation_list')
 
+    # def form_valid(self, form):
+    #     if form.cleaned_data['quantite'] < 5:
+    #         raise ValidationError("Rien observé ?")
 
+    #     return super().form_valid(form)
+    
+class ObservationUpdate(UpdateView):
+    model = Observation
+    template_name = "observations/form.html"
+    form_class = ObservationForm
+    success_url = reverse_lazy('observation_list')
 
+class ObservationDelete(DeleteView):
+    model = Observation
+    template_name = "observations/confirm_delete.html"
+    success_url = reverse_lazy('observation_list')
 
-
-
-
-
-
-
+class ObservationDetail(DetailView):
+    model = Observation
+    template_name = "observations/detail.html"
 
 
 

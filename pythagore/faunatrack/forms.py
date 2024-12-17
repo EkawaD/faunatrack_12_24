@@ -9,7 +9,6 @@ class FaunatrackForm(forms.ModelForm):
         for visible_field in self.visible_fields():
             visible_field.field.widget.attrs["class"] = "border w-full p-2 rounded-lg focus:ring-blue-500 focus:border-blue-500"
 
-
 class ObservationForm(FaunatrackForm):
     class Meta:
         model = Observation
@@ -21,7 +20,19 @@ class ObservationForm(FaunatrackForm):
                 }
             )
         }
+    quantite = forms.IntegerField(
+        label="Quantité",
+        help_text="Nomde d'individus observés",
+        min_value=1,
+        max_value=3000
+    )
 
+    def clean_quantite(self):
+        quantite = self.cleaned_data.get("quantite")
+        if quantite <= 0 or quantite > 1000:
+            raise forms.ValidationError("Vous devez avoir observé au moins 1 individu et pas plus de 1000!")
+
+        
     
 class ProjetForm(FaunatrackForm):
     class Meta:
