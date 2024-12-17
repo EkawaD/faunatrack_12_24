@@ -2,4 +2,7 @@
 
 {% block content %}
 <h1> Bonjour {{ request.user }} et bienvenue sur Faunatrack ! </h1>
+{% for d in  data %}
+    {{ d }}
+{% endfor %}
 {% endblock content %}

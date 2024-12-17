@@ -33,6 +33,7 @@ class Projet(models.Model):
     def __str__(self):
         return self.titre
 
+
 class GPS(models.Model):
     latitude = models.DecimalField(decimal_places=5, max_digits=8, validators=[validate_latitude])
     longitude = models.DecimalField(decimal_places=5, max_digits=8, validators=[validate_longitude])
@@ -53,6 +54,13 @@ class Observation(models.Model):
     notes = models.TextField(default="Pas de notes pour cette observation")
     photo = models.ImageField(upload_to="faunatrack/static/photo_observations", blank=True, null=True, default=None )
     emplacement = models.ForeignKey(GPS, on_delete=models.SET_NULL, related_name="observations", null=True, default=None)
+
+    def save(self, *args, **kwargs):
+        total_quantite = Observation.objects.filter(espece=self.espece).aggregate(total=models.Sum("quantite"))["total"]
+        if total_quantite and total_quantite < 10:
+            self.espece.status = Espece.StatusChoice.EN_DANGER
+            self.espece.save()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.espece} observé à: {self.emplacement.latitude}, {self.emplacement.longitude}, le {self.date_observation}"
