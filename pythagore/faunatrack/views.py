@@ -9,6 +9,8 @@ def bonjour(request):
         "couleur_du_ciel": "bleu"
     })
 
+# https://refactoring.guru
+# https://refactoring.guru/fr/replace-nested-conditional-with-guard-clauses
 def faunatrack_home(request):
     user = request.user
     if not user.is_authenticated:
