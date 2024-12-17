@@ -22,7 +22,6 @@ class ObservationForm(FaunatrackForm):
         }
     quantite = forms.IntegerField(
         label="Quantité",
-        help_text="Nomde d'individus observés",
         min_value=1,
         max_value=3000
     )
@@ -31,6 +30,7 @@ class ObservationForm(FaunatrackForm):
         quantite = self.cleaned_data.get("quantite")
         if quantite <= 0 or quantite > 1000:
             raise forms.ValidationError("Vous devez avoir observé au moins 1 individu et pas plus de 1000!")
+        return quantite # Forgetting this leads to forms errors !
 
         
     

@@ -1,5 +1,5 @@
 
-from django.forms import ValidationError
+import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse_lazy
@@ -15,7 +15,8 @@ class AuthorizationMixin(LoginRequiredMixin, PermissionRequiredMixin):
 class ObservationList(AuthorizationMixin, ListView):
     model = Observation
     template_name = "observations/list.html"
-    permission_required = "change_observation" #, "change_observation", "delete_observation", "add_observation" ~ Dont work
+    permission_required = "faunatrack.change_observation" # Don't forget the app name before the permissions !
+    # "faunatrack.view_observation", "faunatrack.delete_observation", "faunatrack.add_observation" 
 
 
 class ObservationCreate(CreateView):
@@ -24,11 +25,13 @@ class ObservationCreate(CreateView):
     form_class = ObservationForm
     success_url = reverse_lazy('observation_list')
 
-    # def form_valid(self, form):
-    #     if form.cleaned_data['quantite'] < 5:
-    #         raise ValidationError("Rien observé ?")
+    # Correct implementation of form_valid
+    def form_valid(self, form):
+        if form.cleaned_data.get("quantite") < 5:
+            form.add_error("quantite","Quantité ne peut être inférieur à 5")
+            return self.form_invalid(form)
 
-    #     return super().form_valid(form)
+        return super().form_valid(form)
     
 class ObservationUpdate(UpdateView):
     model = Observation
@@ -36,10 +39,11 @@ class ObservationUpdate(UpdateView):
     form_class = ObservationForm
     success_url = reverse_lazy('observation_list')
 
-    def get_context_data(self, context):
-        context["gandalf"] = "Un magicien n'est jamais en retard"
-        return context
-
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['gandalf'] = 'Un magicien n est jamais en retard'
+        return data
+    
 class ObservationDelete(UserPassesTestMixin, DeleteView):
     model = Observation
     template_name = "observations/confirm_delete.html"
@@ -51,10 +55,6 @@ class ObservationDelete(UserPassesTestMixin, DeleteView):
         except ProfilScientifique.DoesNotExist:
             messages.error(self.request, "Vous n'êtes pas scientifique !", extra_tags="text-red-500")
             return False
-        
-        # if not self.request.user.profil_scientifique: 
-        #     return False
-        # return True
 
 class ObservationDetail(DetailView):
     model = Observation
@@ -77,7 +77,7 @@ def bonjour(request):
         "couleur_du_ciel": "bleu"
     })
 
-import datetime
+
 # https://refactoring.guru
 # https://refactoring.guru/fr/replace-nested-conditional-with-guard-clauses
 def faunatrack_home(request):
