@@ -18,8 +18,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import faunatrack.views as faunatrack_views
+from django.urls import include, path
 
 urlpatterns = [
+    path("", faunatrack_views.bonjour, name="home"),
     path("admin/", admin.site.urls, name="admin_django_faunatrack"),
-    path("bonjour/", faunatrack_views.bonjour, name="bonjour")
+    path("accounts/", include("django.contrib.auth.urls"), name="auth"),
+    path("faunatrack/", include('faunatrack.urls'), name="faunatrack" ),
 ]

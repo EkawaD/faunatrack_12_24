@@ -1,10 +1,16 @@
 
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
-from faunatrack.models import Espece
 
-# Create your views here.
 def bonjour(request):
-    print(Espece.objects.all().first())
-    return HttpResponse("Bonjour !")
+    messages.add_message(request, messages.INFO, "Bienvenue !")
+    return render(request, 'home.html', {
+        "couleur_du_ciel": "bleu"
+    })
+
+def faunatrack_home(request):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect('home')
+    return render(request, "faunatrack_accueil.html")
