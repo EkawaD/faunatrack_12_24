@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-+3c8m*%g($136!vd=+w6rp*6&u8j3p_5wk&+$9qvm-@nl#nt1f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1"]
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # Application definition
@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "faunatrack", # python manage.py startapp faunatrack
-    "django_extensions",
-    "import_export",
+    "django_extensions", # python manage.py startapp django-extensions
+    "import_export", # python manage.py startapp django-import-export
+    'rest_framework', # python manage.py startapp djangorestframework
 ]
 
 MIDDLEWARE = [
