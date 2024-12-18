@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Permission, Group
-
+from django.core.mail import send_mail
 from faunatrack.validators import validate_latitude, validate_longitude
 
 
@@ -97,7 +97,15 @@ class ProfilScientifique(models.Model):
             self.user.groups.add(pythagore_group)
             self.user.save()
         except Group.DoesNotExist:
-            pass
+            send_mail(
+                "ERROR: Le group Pythagore n'a pas été créé en BDD !",
+                "Merci d'ajouter le groupe Pythagore",
+                "from@example.com",
+                ["to@example.com"],
+                fail_silently=False,
+            ) 
+            # Alternatives : Crée le groupe pythagore dans le code plutôt que dans l'admin: 
+            # save method, signals, migrations....
         
         
     # Attention cette méthode est appelé dès que l'instance est modifié ET/OU créée! 
