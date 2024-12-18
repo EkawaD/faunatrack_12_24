@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     "faunatrack", # python manage.py startapp faunatrack
     "django_extensions", # python manage.py startapp django-extensions
     "import_export", # python manage.py startapp django-import-export
-    'rest_framework', # python manage.py startapp djangorestframework
+    "rest_framework", # python manage.py startapp djangorestframework
+    "rest_framework.authtoken",
+    "dj_rest_auth",
 ]
 
 MIDDLEWARE = [
@@ -134,3 +136,39 @@ STATIC_ROOT = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+
+
+### API
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    ]
+    
+}
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_HTTPONLY':False, # TODO: True in production !!
+    'JWT_AUTH_COOKIE': 'faunatrack_jwt',
+    'JWT_AUTH_REFRESH_COOKIE': 'faunatrack_refresh_jwt',
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
+
+# https://jwt.io/introduction
+# je m'authentifie avec username/mdp
+# Je récupère l'access_token et le refresh token
+# je stocke en [session/cookie/bdd/memory....] les deux tokens
+# Le frontend s'authentifie avec l'access token sur les routes de mon application
+# Si l'acces token a expiré (403 forbidden), alors le frontend doit appeler la route /refresh/token avec le refresh_token et récupéré un nouveau access_token
+# Le frontend retry l'appel précédent avec le nouvel access_token
+# Si la route /refreh/token renvoie une erreur, alors le token est expiré et l'utilisateur doit s'authentifier avec username/mdp de nouveau

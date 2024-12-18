@@ -24,4 +24,5 @@ urlpatterns = [
     path("admin/", admin.site.urls, name="admin_django_faunatrack"),
     path("accounts/", include("django.contrib.auth.urls"), name="auth"),
     path("faunatrack/", include('faunatrack.urls'), name="faunatrack" ),
+    path('api/auth/', include('dj_rest_auth.urls')),
 ]

@@ -4,7 +4,7 @@ import faunatrack.api_views as api
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r"observations", api.ObservationViewset)
+router.register(r"observations", api.ObservationViewset) #/faunatrack/api/observations/
 
 
 urlpatterns = [
@@ -16,5 +16,5 @@ urlpatterns = [
     path("observations/edit/<int:pk>/", ObservationUpdate.as_view(), name="observation_update"),
     path("observations/delete/<int:pk>/", ObservationDelete.as_view(), name="observation_delete"),
     path("example/", api.ExampleView.as_view(), name="example"),
-    path("api/", include(router.urls))
+    path("api/", include(router.urls)) 
 ]
