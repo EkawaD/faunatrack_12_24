@@ -37,7 +37,7 @@ class EspeceAdmin(ImportExportModelAdmin):
 
 @admin.register(Observation)
 class ObservationAdmin(admin.ModelAdmin):
-    list_display = ["get_gps", "espece__nom", "scientifique__user__username"]
+    list_display = ["id", "get_gps", "espece__nom", "scientifique__user__username"]
     ordering = ["-date_observation"]
     actions = ["projet_critique"]
 

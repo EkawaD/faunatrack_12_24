@@ -54,7 +54,7 @@ class Observation(models.Model):
     quantite = models.IntegerField(default=0)
     date_observation = models.DateTimeField()
     notes = models.TextField(default="Pas de notes pour cette observation")
-    photo = models.ImageField(upload_to="faunatrack/static/photo_observations", blank=True, null=True, default=None )
+    photo = models.ImageField(upload_to="photo_observations/", blank=True, null=True, default=None )
     emplacement = models.ForeignKey(GPS, on_delete=models.SET_NULL, related_name="observations", null=True, default=None)
 
     def save(self, *args, **kwargs):

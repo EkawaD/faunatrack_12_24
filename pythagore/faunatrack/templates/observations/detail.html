@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
 
 
 {{ object }}
+<p>{% static object.photo %}</p>
+<img src="{% static object.photo %}" alt="{{object.espece.nom}}"/>
 
 
 {% endblock content %}
