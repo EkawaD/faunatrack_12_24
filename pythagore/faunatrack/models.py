@@ -1,7 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission, Group
 
 from faunatrack.validators import validate_latitude, validate_longitude
+
+
 # from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -56,17 +58,20 @@ class Observation(models.Model):
     emplacement = models.ForeignKey(GPS, on_delete=models.SET_NULL, related_name="observations", null=True, default=None)
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         total_quantite = Observation.objects.filter(espece=self.espece).aggregate(total=models.Sum("quantite"))["total"]
         if total_quantite and total_quantite < 10:
             self.espece.status = Espece.StatusChoice.EN_DANGER
-            self.espece.save()
-        super().save(*args, **kwargs)
+        elif total_quantite and total_quantite >= 10:
+            self.espece.status = Espece.StatusChoice.EN_FORME
+        self.espece.save()
 
     def __str__(self):
         return f"{self.espece} observé à: {self.emplacement.latitude}, {self.emplacement.longitude}, le {self.date_observation}"
 
 # class UserFaunatrack(User):
 #     pass     
+
 
 class ProfilScientifique(models.Model):
     user = models.OneToOneField(User, related_name="profil_scientifique", on_delete=models.CASCADE)
@@ -78,3 +83,28 @@ class ProfilScientifique(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    def add_permissions_for_scientifique(self):
+        permissions = Permission.objects.filter(content_type__app_label="faunatrack")
+        for permission in permissions:
+            self.user.user_permissions.add(permission)
+        self.user.save()
+        
+    # TODO: Add user to a group ???
+    def add_pythagore_group(self):
+        try:
+            pythagore_group = Group.objects.get(name='pythagore') # Lève une exception si n'existe pas 
+            self.user.groups.add(pythagore_group)
+            self.user.save()
+        except Group.DoesNotExist:
+            pass
+
+        
+    # Attention cette méthode est appelé dès que l'instance est modifié ET/OU créée! 
+    def save(self, *args, **kwargs):
+        if not self.pk: # Cas d'un AJOUT dans la bdd
+            self.add_permissions_for_scientifique()
+            # self.add_pythagore_group()
+        else: # Cas de modification en bdd
+            pass
+        super().save(*args, **kwargs)

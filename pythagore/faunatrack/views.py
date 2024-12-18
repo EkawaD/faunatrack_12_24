@@ -12,11 +12,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, 
 class AuthorizationMixin(LoginRequiredMixin, PermissionRequiredMixin):
     pass
 
+# L'ordre des classes hérités est important: par exemple, il faut mettre le LoginRequiredMixin AVANT la class View
 class ObservationList(AuthorizationMixin, ListView):
     model = Observation
     template_name = "observations/list.html"
-    permission_required = "faunatrack.change_observation" # Don't forget the app name before the permissions !
-    # "faunatrack.view_observation", "faunatrack.delete_observation", "faunatrack.add_observation" 
+    permission_required = "faunatrack.view_observation" # Don't forget the app name before the permissions !
+    # "faunatrack.change_observation", "faunatrack.delete_observation", "faunatrack.add_observation" 
 
 
 class ObservationCreate(CreateView):
