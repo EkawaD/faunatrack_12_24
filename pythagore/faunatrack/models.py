@@ -90,21 +90,21 @@ class ProfilScientifique(models.Model):
             self.user.user_permissions.add(permission)
         self.user.save()
         
-    # TODO: Add user to a group ???
     def add_pythagore_group(self):
         try:
-            pythagore_group = Group.objects.get(name='pythagore') # Lève une exception si n'existe pas 
+            # Fix: group was "Pythagore" and not "pythagore" in my db
+            pythagore_group = Group.objects.get(name='Pythagore')
             self.user.groups.add(pythagore_group)
             self.user.save()
         except Group.DoesNotExist:
             pass
-
+        
         
     # Attention cette méthode est appelé dès que l'instance est modifié ET/OU créée! 
     def save(self, *args, **kwargs):
         if not self.pk: # Cas d'un AJOUT dans la bdd
             self.add_permissions_for_scientifique()
-            # self.add_pythagore_group()
         else: # Cas de modification en bdd
             pass
+        self.add_pythagore_group()
         super().save(*args, **kwargs)

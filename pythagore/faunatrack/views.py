@@ -86,8 +86,6 @@ def faunatrack_home(request):
     if not user.is_authenticated:
         return redirect('home')
 
-
-
     data = Observation.objects.all().filter(espece__nom__startswith="O").exclude(date_observation__gt=datetime.date.today())
     try:
         espece = Espece.objects.get(id=50) # Lève une exception DoestNotExists !!
@@ -95,7 +93,7 @@ def faunatrack_home(request):
         espece = None
 
     espece = Espece.objects.filter(id=50)
-    observations = Observation.objects.select_related("emplacement").all() # Récupère les ids de "emplacement" AVANT la requpete SQL, pratique si une ligne de la db est requếté plusieurs fois
+    observations = Observation.objects.select_related("emplacement").all() # Récupère les ids de "emplacement" AVANT la requête SQL, pratique si une ligne de la db est requếté plusieurs fois
     return render(request, "faunatrack_accueil.html", {
         "data": data
     })
