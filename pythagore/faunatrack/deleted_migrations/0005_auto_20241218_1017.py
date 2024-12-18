@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
 
     def func(self):
         pass
+        # Group.objects.create(name="Pythagore")
         # User.objects.create_superuser()
 
     operations = [migrations.RunPython(func),]

@@ -112,7 +112,7 @@ class ProfilScientifique(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk: # Cas d'un AJOUT dans la bdd
             self.add_permissions_for_scientifique()
+            self.add_pythagore_group()
         else: # Cas de modification en bdd
             pass
-        self.add_pythagore_group()
         super().save(*args, **kwargs)
